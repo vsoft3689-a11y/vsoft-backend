@@ -25,6 +25,5 @@ public class Project {
 	private String type; // Major Project or Minor Project
 	private String domain; // FullStack, Cyber security
 	private String title;  // Project name
-	
-
+	private String description;
 }
