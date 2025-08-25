@@ -73,15 +73,16 @@ public class ProjectController {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Uploaded file is empty"));
             }
-            List<Project> projects = projectService.saveFileData(file.getInputStream());
-            if (!projects.isEmpty()) {
-                return ResponseEntity.ok(Map.of("message", "Data added successfully", "recordsSaved", projects.size()));
-            } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "No data saved"));
-            }
-        } catch (RuntimeException e) {
+            Map<String, Object> response = projectService.saveFileData(file.getInputStream());
+//            if (!projects.isEmpty()) {
+//                return ResponseEntity.ok(Map.of("message", "Data added successfully", "recordsSaved", projects.size()));
+//            } else {
+//                return ResponseEntity.badRequest().body(Map.of("error", "No data saved"));
+//            }
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-        } catch (IOException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Server error while reading file"));
         }
     }

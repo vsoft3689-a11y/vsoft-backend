@@ -2,8 +2,7 @@ package com.vsoft.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,38 +39,50 @@ public class ProjectService {
         return projectRepository.saveAll(projects);
     }
 
-    public List<Project> saveFileData(InputStream file) throws IOException {
-        List<Project> projects = new LinkedList<>();
+    public Map<String, Object> saveFileData(InputStream file) throws IOException {
+        List<Project> projectsToSave = new LinkedList<>();
+
+        List<String> uniqueTitles = new ArrayList<>();
+        List<String> duplicateTitles = new ArrayList<>();
 
         try (Workbook workbook = WorkbookFactory.create(file)) {  // Auto-close workbook
             Sheet sheet = workbook.getSheetAt(0);
 
             sheet.forEach(row -> {
-                if (row.getRowNum() != 0) { // Skip header
-                    if (row.getPhysicalNumberOfCells() < 6) {
-                        throw new IllegalArgumentException(
-                                "Invalid file format at row " + row.getRowNum() + " (less columns)"
-                        );
-                    }
+                if (row.getRowNum() == 0) return; // Skip header
 
+                if (row.getPhysicalNumberOfCells() < 6) {
+                    throw new IllegalArgumentException(
+                            "Invalid file format at row " + row.getRowNum() + " (less columns)"
+                    );
+                }
+
+                String title = row.getCell(4).getStringCellValue();
+
+                if (projectRepository.existsByTitle(title)) {
+                    duplicateTitles.add("(row " + row.getRowNum() + ")");
+                } else {
                     Project p = new Project();
                     p.setDegree(row.getCell(0).getStringCellValue());
                     p.setBranch(row.getCell(1).getStringCellValue());
                     p.setType(row.getCell(2).getStringCellValue());
                     p.setDomain(row.getCell(3).getStringCellValue());
-                    p.setTitle(row.getCell(4).getStringCellValue());
+                    p.setTitle(title);
                     p.setDescription(row.getCell(5).getStringCellValue());
-
-                    // Validate unique title
-                    if (projectRepository.existsByTitle(p.getTitle())) {
-                        throw new IllegalArgumentException(
-                                "Project with title '" + p.getTitle() + "' already exists (row " + row.getRowNum() + ")"
-                        );
-                    }
-                    projects.add(p);
+                    projectsToSave.add(p);
+                    uniqueTitles.add("(row " + row.getRowNum() + ") ");
                 }
             });
-            return projectRepository.saveAll(projects);
+
+            // Save only new projects
+            List<Project> savedProjects = projectRepository.saveAll(projectsToSave);
+
+            // Prepare response
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("savedProjects", uniqueTitles.toArray().length > 0 ? uniqueTitles : "No new projects to add");
+            response.put("duplicates", duplicateTitles.toArray().length > 0 ? duplicateTitles : "No duplicate projects found");
+            return response;
         }
     }
 }
