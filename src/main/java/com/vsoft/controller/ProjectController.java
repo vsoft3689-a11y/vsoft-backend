@@ -1,6 +1,5 @@
 package com.vsoft.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vsoft.entity.Project;
 import com.vsoft.service.ProjectService;
 
+@CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api")
+//@CrossOrigin(origins = "*")
 @Validated
 public class ProjectController {
 

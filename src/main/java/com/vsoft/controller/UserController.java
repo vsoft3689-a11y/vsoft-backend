@@ -1,31 +1,62 @@
 package com.vsoft.controller;
 
+import com.vsoft.entity.User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vsoft.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+@CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
+//@CrossOrigin(origins = "*")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
 	@PostMapping("/register")
-	public String register(@RequestParam String fullName, @RequestParam String email, @RequestParam String phone,
-			@RequestParam String degree, @RequestParam String password) {
-		return userService.register(fullName, email, phone, degree, password);
+	public Map<String,Object> register(@RequestBody User user) {
+		Map<String,Object> result = userService.register(user);
+		return result;
 	}
 
 	@PostMapping("/login")
-	public String login(@RequestParam String email, @RequestParam String password) {
-		boolean success = userService.login(email, password);
-		return success ? "Login successful" : "Invalid credentials";
+	public Map<String, Object> login(@RequestBody User user, HttpSession session) {
+		String email = user.getEmail();
+		String password = user.getPassword();
+
+		Optional<User> userinfo = userService.login(email, password);
+
+		Map<String, Object> response = new HashMap<>();
+
+		if (userinfo.isPresent()) {
+			session.setAttribute("user", userinfo.get());
+			response.put("status", 200);
+			response.put("message", "Login successful");
+			response.put("sessionId", session.getId());
+			response.put("user", userinfo.get().getFullName());
+		} else {
+			response.put("status", 401);
+			response.put("message", "Invalid credentials");
+		}
+		return response;
+	}
+
+
+	// Logout
+	@PostMapping("/logout")
+	public Map<String, Object> logout(HttpSession session) {
+		System.out.println(session);
+		session.invalidate();
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", "success");
+		response.put("message", "Logged out successfully");
+		return response;
 	}
 }

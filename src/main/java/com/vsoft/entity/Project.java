@@ -26,7 +26,7 @@ public class Project {
     private String degree; // BTECH, MTECH, MBA, MCA
     @NotBlank(message = "Branch is required")
     private String branch; // CSE, EEE, ECE, MECH
-    @Pattern(regexp = "Major|Minor", message = "Type must be either 'major' or 'mini'")
+    @Pattern(regexp = "Major|Mini", message = "Type must be either 'major' or 'mini'")
     private String type; // Major Project or Minor Project
     @NotBlank(message = "Domain is required")
     private String domain; // FullStack, Cyber security

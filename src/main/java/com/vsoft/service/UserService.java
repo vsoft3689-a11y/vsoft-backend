@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import com.vsoft.entity.User;
 import com.vsoft.repository.UserRepository;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -15,24 +19,36 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public String register(String fullName, String email, String phone, String degree, String password) {
+    public Map<String,Object> register(User user) {
+        String email = user.getEmail();
+        String password = user.getPassword();
+
+        Map<String,Object> response = new HashMap<>();
+
         if (repo.findByEmail(email).isPresent()) {
-            return "Username already exists";
+            response.put("message", "Email already exists");
+            response.put("status", 409);
+            return response;
         }
-        User user = new User();
-        user.setEmail(email);
-        user.setFullName(fullName);
-        user.setDegree(degree);
-        user.setPhone(phone);
-        user.setPassword(encoder.encode(password)); // store encrypted
-        
+        user.setPassword(encoder.encode(password)); // store encrypted password
+
         repo.save(user);
-        return "User registered successfully";
+        response.put("message", "User registered successfully");
+        response.put("status", 201);
+        return response;
     }
 
-    public boolean login(String email, String password) {
-        return repo.findByEmail(email)
-                .map(user -> encoder.matches(password, user.getPassword()))
-                .orElse(false);
+    public Optional<User> login(String email, String password) {
+        Optional<User> user = repo.findByEmail(email);
+        if (user.isEmpty()) {
+            return Optional.empty(); // user not found
+        }
+
+        if (encoder.matches(password, user.get().getPassword())) {
+            return user; // success
+        } else {
+            return Optional.empty(); // password mismatch
+        }
     }
+
 }

@@ -3,6 +3,7 @@ package com.vsoft.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.vsoft.entity.Project;
@@ -11,4 +12,7 @@ import com.vsoft.entity.Project;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 	boolean existsByTitle(String title);
 	List<Project> findByDegreeAndBranchAndTypeAndDomain(String degree, String branch, String type, String domain);
+
+	@Query("SELECT p.title FROM Project p")
+	List<String> findAllTitles();
 }
