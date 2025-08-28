@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,14 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vsoft.entity.Project;
 import com.vsoft.service.ProjectService;
 
-@CrossOrigin(
-        origins = "https://sathvikagundapu.github.io",
-        allowCredentials = "true"
-)
+@CrossOrigin(origins = {"https://sathvikagundapu.github.io","http://127.0.0.1:5500","http://localhost:5500"},allowCredentials = "true")
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin(origins = "*")
-@Validated
 public class ProjectController {
 
     @Autowired
@@ -40,7 +34,7 @@ public class ProjectController {
     @GetMapping("/projects/{degree}/{branch}/{type}/{domain}")
     public List<Project> getFilteredProjects(@PathVariable @NotBlank(message = "Degree is required") String degree,
                                              @PathVariable @NotBlank(message = "Degree is required") String branch,
-                                             @PathVariable @Pattern(regexp = "Major|Minor", message = "Type must be either 'major' or 'mini'") String type,
+                                             @PathVariable @Pattern(regexp = "Major|Mini", message = "Type must be either 'major' or 'mini'") String type,
                                              @PathVariable @NotBlank(message = "Domain is required") String domain) {
         return projectService.getFilteredProjects(degree, branch, type, domain);
     }

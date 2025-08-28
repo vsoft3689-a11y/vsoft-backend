@@ -2,6 +2,7 @@ package com.vsoft.controller;
 
 import com.vsoft.entity.User;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,27 +12,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(
-		origins = "https://sathvikagundapu.github.io",
-		allowCredentials = "true"
-)
-
+@CrossOrigin(origins = {"https://sathvikagundapu.github.io","http://127.0.0.1:5500","http://localhost:5500"},allowCredentials = "true")
 @RestController
 @RequestMapping("/auth")
-//@CrossOrigin(origins = "*")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
 	@PostMapping("/register")
-	public Map<String,Object> register(@RequestBody User user) {
-		Map<String,Object> result = userService.register(user);
-		return result;
+	public Map<String,Object> register(@Valid @RequestBody User user) {
+        return userService.register(user);
 	}
 
 	@PostMapping("/login")
-	public Map<String, Object> login(@RequestBody User user, HttpSession session) {
+	public Map<String, Object> login(@Valid @RequestBody User user, HttpSession session) {
 		String email = user.getEmail();
 		String password = user.getPassword();
 
