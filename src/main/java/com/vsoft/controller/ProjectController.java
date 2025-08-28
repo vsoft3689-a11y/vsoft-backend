@@ -24,7 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vsoft.entity.Project;
 import com.vsoft.service.ProjectService;
 
-@CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
+@CrossOrigin(
+        origins = "https://sathvikagundapu.github.io",
+        allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/api")
 //@CrossOrigin(origins = "*")

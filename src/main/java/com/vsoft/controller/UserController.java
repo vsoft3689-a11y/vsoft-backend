@@ -11,7 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "https://sathvikagundapu.github.io/VSOFTFRONTEND/", allowCredentials = "true")
+@CrossOrigin(
+		origins = "https://sathvikagundapu.github.io",
+		allowCredentials = "true"
+)
+
 @RestController
 @RequestMapping("/auth")
 //@CrossOrigin(origins = "*")
