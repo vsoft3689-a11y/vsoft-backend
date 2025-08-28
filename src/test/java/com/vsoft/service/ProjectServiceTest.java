@@ -3,9 +3,11 @@ package com.vsoft.service;
 import com.vsoft.entity.Project;
 import com.vsoft.repository.ProjectRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-
+@ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
 
     @Mock
@@ -21,10 +23,6 @@ public class ProjectServiceTest {
 
     @InjectMocks
     private ProjectService projectService;
-
-    public ProjectServiceTest() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testGetFilteredProjects(){
@@ -53,7 +51,7 @@ public class ProjectServiceTest {
         Project project = new Project();
         project.setTitle("Project1");
 
-        when(projectRepository.existsByTitle("Project1")).thenReturn(true);
+        when(projectRepository.existsByTitle("Project1")).thenReturn(false);
         when(projectRepository.save(project)).thenReturn(project);
 
         Project savedProject = projectService.createProject(project);

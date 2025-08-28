@@ -26,7 +26,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public Map<String, Object> login(@Valid @RequestBody User user, HttpSession session) {
+	public Map<String, Object> login(@RequestBody User user, HttpSession session) {
 		String email = user.getEmail();
 		String password = user.getPassword();
 
