@@ -71,11 +71,6 @@ public class ProjectController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Uploaded file is empty"));
             }
             Map<String, Object> response = projectService.saveFileData(file.getInputStream());
-//            if (!projects.isEmpty()) {
-//                return ResponseEntity.ok(Map.of("message", "Data added successfully", "recordsSaved", projects.size()));
-//            } else {
-//                return ResponseEntity.badRequest().body(Map.of("error", "No data saved"));
-//            }
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
