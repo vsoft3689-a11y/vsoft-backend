@@ -60,7 +60,6 @@ public class ProjectService {
                     );
                 }
 
-//                String title = row.getCell(4).getStringCellValue();
                 String title = row.getCell(4) != null ? row.getCell(4).toString().trim() : "";
                 if (existingTitles.contains(title)) {
                     duplicateTitles.add("(row " + row.getRowNum() + ")");
