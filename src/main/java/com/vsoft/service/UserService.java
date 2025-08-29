@@ -50,5 +50,4 @@ public class UserService {
             return Optional.empty(); // password mismatch
         }
     }
-
 }

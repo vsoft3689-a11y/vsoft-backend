@@ -34,17 +34,14 @@ public class UserController {
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
             response.put("error", "Email is required");
             return response;
-//			return ResponseEntity.badRequest().body(response);
         }
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             response.put("error", "Invalid email format");
             return response;
-//			return ResponseEntity.badRequest().body(response);
         }
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             response.put("error", "Password is required");
             return response;
-//			return ResponseEntity.badRequest().body(response);
         }
         Optional<User> userinfo = userService.login(email, password);
 
